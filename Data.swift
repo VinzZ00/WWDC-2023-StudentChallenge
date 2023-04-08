@@ -10,6 +10,9 @@ import Foundation
 class Data : ObservableObject {
     @Published var userName = "";
     @Published var financialConcept : String?
-    @Published var salary : Double?
-    @Published var newUser : User?
+    @Published var salary : String = ""
+    @Published var currentUser : User?
+    @Published var moneyToPayforLoan : Double = 0
+    @Published var moneyToPrimaryNeeds : Double = 0
+    @Published var logout : Bool = false;
 }

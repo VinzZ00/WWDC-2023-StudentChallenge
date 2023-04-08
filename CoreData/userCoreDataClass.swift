@@ -13,11 +13,21 @@ public class User : NSManagedObject {
     @NSManaged public var id : UUID?
     @NSManaged public var userName : String?
     @NSManaged public var financialType : String?
-    @NSManaged public var salary : Double
+    @NSManaged public var salary : String?
+    @NSManaged public var date : NSSet?
+    
 }
 
-extension User : Identifiable {
+extension User{
     @nonobjc public class func fetchRequest() -> NSFetchRequest<User> {
         return NSFetchRequest<User>(entityName: "User")
+    }
+    
+    public var transactionArray : [DateTransaction] {
+        let set = date as? Set<DateTransaction> ?? [];
+        
+        return set.sorted {
+            $0.dateTime! < $1.dateTime!
+        }
     }
 }

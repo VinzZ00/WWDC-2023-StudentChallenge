@@ -9,6 +9,7 @@ struct MyApp: App {
         WindowGroup {
             landingPage()
                 .environment(\.managedObjectContext, dataController.container.viewContext)
+                
         }
     }
 }

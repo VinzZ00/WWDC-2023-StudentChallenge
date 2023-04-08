@@ -21,6 +21,7 @@ class DataController : ObservableObject {
         
         
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
+            print(storeDescription)
             if let error = error as NSError? {
                 print("Core Data Failed to load, Error : \(error.localizedDescription)")
             }

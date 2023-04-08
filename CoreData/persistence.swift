@@ -25,13 +25,13 @@ struct PersistenceController {
         userEntity.name = "User"
         userEntity.managedObjectClassName = "User"
         
-        let usernNameAttribute = NSAttributeDescription();
-        usernNameAttribute.name = "userName"
-        usernNameAttribute.type = .string
+        let userNameAttribute = NSAttributeDescription();
+        userNameAttribute.name = "userName"
+        userNameAttribute.type = .string
         
-        let usernIdAttribute = NSAttributeDescription();
-        usernIdAttribute.name = "id"
-        usernIdAttribute.type = .uuid
+        let userIdAttribute = NSAttributeDescription();
+        userIdAttribute.name = "id"
+        userIdAttribute.type = .uuid
         
         let UserFinancialTypeAttribute = NSAttributeDescription();
         UserFinancialTypeAttribute.name = "financialType"
@@ -39,10 +39,10 @@ struct PersistenceController {
         
         let userSalaryAttribute = NSAttributeDescription();
         userSalaryAttribute.name = "salary"
-        userSalaryAttribute.type = .double
+        userSalaryAttribute.type = .string
         
-        userEntity.properties.append(usernIdAttribute)
-        userEntity.properties.append(usernNameAttribute)
+        userEntity.properties.append(userIdAttribute)
+        userEntity.properties.append(userNameAttribute)
         userEntity.properties.append(UserFinancialTypeAttribute)
         userEntity.properties.append(userSalaryAttribute)
         
@@ -54,16 +54,27 @@ struct PersistenceController {
         dateIdAttribute.name = "id"
         dateIdAttribute.type = .uuid
         
-        let dateDateAttribute = NSAttributeDescription();
-        dateDateAttribute.name = "dateTime"
-        dateDateAttribute.type = .date
+        let transactionDetail = NSAttributeDescription()
+        transactionDetail.name = "detail"
+        transactionDetail.type = .string
         
-        let dateTotalTransaction = NSAttributeDescription();
-        dateTotalTransaction.name = "TotalExpanditureDaily"
-        dateTotalTransaction.type = .double
+        let transactionPrice = NSAttributeDescription()
+        transactionPrice.name = "transactionPrice"
+        transactionPrice.type = .string
         
+        let dateTimeTransactionAttribute = NSAttributeDescription();
+        dateTimeTransactionAttribute.name = "dateTime"
+        dateTimeTransactionAttribute.type = .date
+        
+        let descriptionTransactionAttribute = NSAttributeDescription();
+        descriptionTransactionAttribute.name = "descriptionTransaction"
+        descriptionTransactionAttribute.type = .string
+
+        dateTransactionEntity.properties.append(descriptionTransactionAttribute)
         dateTransactionEntity.properties.append(dateIdAttribute)
-        dateTransactionEntity.properties.append(dateDateAttribute)
+        dateTransactionEntity.properties.append(transactionDetail)
+        dateTransactionEntity.properties.append(transactionPrice)
+        dateTransactionEntity.properties.append(dateTimeTransactionAttribute)
         
         // Relation
         
@@ -80,18 +91,44 @@ struct PersistenceController {
         dateTransactionRelation.destinationEntity = userEntity;
         dateTransactionRelation.maxCount = 1;
         dateTransactionRelation.minCount = 1;
+        dateTransactionRelation.inverseRelationship = userRelation;
         
         userEntity.properties.append(userRelation)
         dateTransactionEntity.properties.append(dateTransactionRelation)
         
         // ~Unused table just incase if change
 //        let TransactionEntity = NSEntityDescription();
-//        TransactionEntity.name = "transaction"
-//        TransactionEntity.managedObjectClassName = "transaction"
-//
-//        let dayTransactionId = NSAttributeDescription()
+//        TransactionEntity.name = "TransactionEntity"
+//        TransactionEntity.managedObjectClassName = "TransactionEntity"
+
+//        let TransactionId = NSAttributeDescription()
 //        TransactionId.name = "id"
 //        TransactionId.type = .uuid
+        
+        
+        
+//        TransactionEntity.properties.append(TransactionId)
+//        TransactionEntity.properties.append(TransactionDetail)
+//        TransactionEntity.properties.append(transactionPrice)
+//        TransactionEntity.properties.append(dateTimeTransactionAttribute)
+        
+//        let dateToTransactionRelation = NSRelationshipDescription();
+//
+//        dateToTransactionRelation.name = "dateToTransaction"
+//        dateToTransactionRelation.destinationEntity = TransactionEntity;
+//        dateToTransactionRelation.maxCount = 0
+//        dateToTransactionRelation.minCount = 0
+//
+//        let transactionToDateRelation = NSRelationshipDescription();
+//
+//        transactionToDateRelation.name = "transactionToDate"
+//        transactionToDateRelation.destinationEntity = dateTransactionEntity
+//        transactionToDateRelation.maxCount = 1;
+//        transactionToDateRelation.minCount = 1;
+//
+//        dateTransactionEntity.properties.append(dateToTransactionRelation);
+//        TransactionEntity.properties.append(transactionToDateRelation);
+        
 //
 //        let daytransactionTotal = NSAttributeDescription();
         
@@ -100,6 +137,7 @@ struct PersistenceController {
         model = NSManagedObjectModel()
         model.entities.append(userEntity)
         model.entities.append(dateTransactionEntity)
+
         
         
 
