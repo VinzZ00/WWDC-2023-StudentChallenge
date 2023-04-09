@@ -73,14 +73,17 @@ struct PreHomePage: View {
                 }
                 
                 Text("Input your Monthly Salary")
+                    .font(.system(size : 40))
                     .padding(.bottom, 10)
                     .padding(.top, 20)
                 
                 TextField("\(data.currentUser?.salary ?? "0")", text: $data.salary)
+                    .font(.system(size: 40))
                     .padding(.leading, 10)
-                    .frame(width: 320, height: 50)
+                    .frame(width: 1000, height: 75)
                     .border(.gray)
-                    .cornerRadius(5);
+                    .cornerRadius(5)
+                    
                 
                                 Button{
                                     data.currentUser?.salary = data.salary
@@ -95,9 +98,10 @@ struct PreHomePage: View {
                                     
                                 } label :{
                                     Text("Submit")
-                                        .frame(width: 320, height: 50)
+                                        .frame(width: 1000, height: 100)
                                         .background(.black)
                                         .cornerRadius(8)
+                                        .font(.system(size : 50))
                                         .foregroundColor(.white)
                                         .font(.system(size:15) .weight(.regular))
                                         .shadow(color: .gray, radius: 5)

@@ -14,12 +14,14 @@ extension Date {
     }
 }
 
+
+
 struct TransactionSubView : View {
     
     @EnvironmentObject var data : Data
     var user = User();
     var twentyTo50Type : [String] = ["Investment", "Secondary Need", "Primary Need"]
-    var tenTo40Type : [String] = ["Charity", "Investment", "Productive Loan", "Primary Needs"]
+    var tenTo40Type : [String] = ["Charity", "Investment", "Productive Loan", "Primary Need"]
     @State var transPrice : String = "";
     @State var transDesc : String = "";
     @State var type : String = "Primary Need"
@@ -70,6 +72,10 @@ struct TransactionSubView : View {
             self.moneyToPayforLoan = (Double(data.currentUser?.salary ?? "0") ?? 0) / 100 * 30 - totalLoan
             self.moneyToPrimaryNeeds = (Double(data.currentUser?.salary ?? "0") ?? 0) / 100 * 40 - totalNeeds
             self.moneyToSecondaryNeeds = 0
+            
+            print(" for loan ", moneyToPayforLoan)
+            print("for primary ", moneyToPrimaryNeeds)
+            print("for secondary ", moneyToSecondaryNeeds)
         } else {
             print("masuk 2")
                 for y in dateTrans {
@@ -86,7 +92,12 @@ struct TransactionSubView : View {
             self.moneyToPayforLoan = 0
             self.moneyToPrimaryNeeds = (Double(data.currentUser?.salary ?? "0") ?? 0) / 100 * 40 - totalNeeds
             self.moneyToSecondaryNeeds = (Double(data.currentUser?.salary ?? "0") ?? 0) / 100 * 40 - totalSecondaryNeeds
+            print(" for loan ", moneyToPayforLoan)
+            print("for primary ", moneyToPrimaryNeeds)
+            print("for secondary ", moneyToSecondaryNeeds)
             }
+        
+        
 
         
         
@@ -101,13 +112,13 @@ struct TransactionSubView : View {
                     HStack(alignment: .top){
                         Text("For Investment").font(.system(size: 40))
                         Spacer()
-                        Text("\(investment)").font(.system(size: 40))
+                        Text(String(format: "%.2f", investment)).font(.system(size: 40))
                     }
                     HStack(alignment: .top) {
                         if data.currentUser?.financialType == "10 20 30 40" {
                             Text("Total charity you can give : ").font(.system(size: 40))
                             Spacer()
-                            Text("\(charity)").font(.system(size: 40))
+                            Text(String(format: "%.2f", charity)).font(.system(size: 40))
                         }
                     }
                 }.padding(.bottom, 30)
@@ -115,20 +126,26 @@ struct TransactionSubView : View {
                 HStack(alignment: .top){
                     Text("Primary : ").font(.system(size: 40))
                     Spacer()
-                    Text("\(moneyToPrimaryNeeds)").font(.system(size: 40))
+                    Text(String(format: "%.2f", moneyToPrimaryNeeds))
+                        .font(.system(size: 40))
+                        .foregroundColor((moneyToPrimaryNeeds > 0) ? .black : .red)
                 }
                 
                     if data.currentUser?.financialType == "10 20 30 40" {
                         HStack(alignment: .top){
                             Text("Productive Loans : " ).font(.system(size: 40))
                             Spacer()
-                            Text("\(moneyToPayforLoan)").font(.system(size: 40))
+                            Text(String(format: "%.2f", moneyToPayforLoan))
+                                .font(.system(size: 40))
+                                .foregroundColor((moneyToPayforLoan > 0) ? .black : .red)
                         }
                     } else {
                         HStack{
                             Text("Secondary : ").font(.system(size: 40))
                             Spacer()
-                            Text("\(moneyToSecondaryNeeds)").font(.system(size: 40))
+                            Text(String(format: "%.2f", moneyToSecondaryNeeds))
+                                .font(.system(size: 40))
+                                .foregroundColor((moneyToSecondaryNeeds > 0) ? .black : .red)
                             
                         }
                     }
@@ -140,7 +157,7 @@ struct TransactionSubView : View {
                 .font(.system(size: 40))
                 .padding(.top, 30)
             
-            Picker("e", selection : $type) {
+            Picker("", selection : $type) {
                 ForEach((data.currentUser?.financialType == "10 20 30 40") ? Array(tenTo40Type[2..<4]) : Array(twentyTo50Type[1..<3]), id: \.self) {
                     Text($0).font(.system(size: 30))
                 }
@@ -178,14 +195,15 @@ struct TransactionSubView : View {
             }
             
             Button {
+                
+                
                 if type == "Primary Need" {
+                    print("Masuk Di primary needs")
                     moneyToPrimaryNeeds -= Double(transPrice) ?? 0;
                 } else if type == "Productive Loan" {
                     moneyToPayforLoan -= Double(transPrice) ?? 0;
                 } else if type ==  "Secondary Need" {
                     moneyToSecondaryNeeds -= Double(transPrice) ?? 0;
-                    print(moneyToSecondaryNeeds)
-                    print(data.currentUser!.userName ?? "")
                     
                     
                 }
@@ -198,6 +216,8 @@ struct TransactionSubView : View {
                 Ntransaction.dateTime = Date();
                 Ntransaction.detail = type;
                 Ntransaction.dateTransaction = data.currentUser;
+                
+                print("Date : \(Ntransaction.dateTime), Price : \(Ntransaction.transactionPrice), dateTime : \(Ntransaction.dateTime) ")
                 
                 do {
                     try moc.save()
@@ -267,9 +287,11 @@ struct TransactionView : View {
                 switch selectedMenu {
                 case "Transaction" :
                     
-                    TransactionSubView(data, userTransactions);
+                    TransactionSubView(data, userTransactions)
+                        
                 default :
-                    VStack{}
+                    HistorySubView(data, userTransactions)
+                        .navigationTitle("History")
                     
                 }
                 
@@ -279,6 +301,153 @@ struct TransactionView : View {
         }.navigationViewStyle(StackNavigationViewStyle())
             .navigationBarHidden(true)
     }
+}
+
+
+
+
+
+struct HistorySubView : View {
+    
+    var user : User?;
+    @State var isShowedTrans : Bool = false;
+    @State var dateSelected : Date? = nil;
+    
+    init(_ data : Data, _ usersTransactions : FetchedResults<User>) {
+        
+        
+        usersTransactions.forEach{
+            if $0.userName == data.userName {
+                self.user = $0;
+            }
+        }
+        
+//        var X = user?.transactionArray.sorted(by: {
+//            $0.dateTime!.compare($1.dateTime!) == ComparisonResult.orderedAscending
+//        })
+//
+//
+//        for y in X! {
+//            print("Date in : \(y.dateTime)")
+//        }
+        
+        
+        
+//        ForEach(user.transactionArray, id : \.self) {trans in
+//
+//        }
+        
+//        var userTransactions =  usersTransactions.filter{
+//            $0.userName == data.userName
+//        } // Still in user
+//
+//        userTransactions.forEach{
+//
+//        }
+        
+        
+        
+        
+    }
+    
+    
+    
+    var body : some View {
+        
+        VStack{
+            if let u = user!.transactionArray {
+                
+                let uniqueTransDate = getUniqueDateArray(trans: u)
+                
+                
+//                Text("Trans COunt \(uniqueTransDate.count)" )
+                List(uniqueTransDate, id : \.self) {
+                    transDate in
+                    
+                    
+                    VStack{
+                        HStack{
+                            Text(String(format: "Total : %.2f", getTotalDaily(transDate, u)))
+
+                            Spacer();
+                            
+                            Text(String("\(transDate.formatted(date: .abbreviated, time: .omitted))"))
+                        }.onTapGesture {
+                            isShowedTrans = true
+                            dateSelected = transDate;
+                            print("Testing transdate : \(transDate)")
+                        }
+                    }.sheet(isPresented: $isShowedTrans, content: {
+                        
+                        VStack{
+                            
+                            
+                            Text("Hello world, the transaction will be shown for date : \(dateSelected?.get(getWhat: .month) ?? 0), and month :\(dateSelected?.get(getWhat: .day) ?? 0)")
+                                .frame(width: 1000, height: 700)
+                                .font(.system(size: 50))
+                        }
+                        
+                    })
+                }
+                
+                
+                
+                // harus bikin dia berdasarkan date dlu biar satu date gaa redundant gitu,
+                // Array distinct buat extension baru deng, semangat
+                // main game dlu ya gais
+                
+                
+//                List(u, id : \.self) {trans in
+//                    var dateCheck : Date = trans.dateTime!;
+//                    VStack {
+//                        HStack {
+//
+//                            Text(String(format: "Total : %.2f", getTotalDaily(dateCheck, u)))
+//
+//                            Spacer();
+//                            Text(String("\(trans.dateTime!)"))
+//
+//
+//                        }
+//                    }
+//                }
+            }
+        }
+    }
+}
+
+func getUniqueDateArray( trans : [DateTransaction]) -> [Date] {
+    var uniqueTransactionDate : [Date] = []
+    var calendar = Calendar(identifier: .gregorian)
+    for x in trans {
+        
+        var DateComponents : DateComponents = DateComponents();
+        
+        DateComponents.day = x.dateTime?.get(getWhat: .day)
+        DateComponents.month = x.dateTime?.get(getWhat: .month)
+        DateComponents.year = x.dateTime?.get(getWhat: .year)
+        
+        var uniqueDate = calendar.date(from: DateComponents);
+        
+        if !uniqueTransactionDate.contains(uniqueDate!) {
+            uniqueTransactionDate.append(uniqueDate!)
+        }
+    }
+    return uniqueTransactionDate;
+}
+
+func getTotalDaily(_ dateCheck : Date, _ trans : [DateTransaction]) -> Double {
+    
+    var totalDaily : Double = 0;
+    
+    for x in trans {
+        if (x.dateTime?.get(getWhat: .year) == dateCheck.get(getWhat: .year) && x.dateTime?.get(getWhat: .month) == dateCheck.get(getWhat: .month) && x.dateTime?.get(getWhat: .day) == dateCheck.get(getWhat: .day)) {
+            totalDaily += Double(x.transactionPrice!) ?? 0
+        }
+        
+        print("Total Daily :  \(totalDaily)")
+    }
+    return totalDaily;
 }
 
 
