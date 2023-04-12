@@ -216,7 +216,7 @@ struct TransactionSubView : View {
                 Ntransaction.dateTime = Date();
                 Ntransaction.detail = type;
                 Ntransaction.dateTransaction = data.currentUser;
-                
+                Ntransaction.descriptionTransaction  = transDesc
                 print("Date : \(Ntransaction.dateTime), Price : \(Ntransaction.transactionPrice), dateTime : \(Ntransaction.dateTime) ")
                 
                 do {
@@ -311,7 +311,7 @@ struct HistorySubView : View {
     
     var user : User?;
     @State var isShowedTrans : Bool = false;
-    @State var dateSelected : Date? = nil;
+
     
     init(_ data : Data, _ usersTransactions : FetchedResults<User>) {
         
@@ -322,28 +322,7 @@ struct HistorySubView : View {
             }
         }
         
-//        var X = user?.transactionArray.sorted(by: {
-//            $0.dateTime!.compare($1.dateTime!) == ComparisonResult.orderedAscending
-//        })
-//
-//
-//        for y in X! {
-//            print("Date in : \(y.dateTime)")
-//        }
-        
-        
-        
-//        ForEach(user.transactionArray, id : \.self) {trans in
-//
-//        }
-        
-//        var userTransactions =  usersTransactions.filter{
-//            $0.userName == data.userName
-//        } // Still in user
-//
-//        userTransactions.forEach{
-//
-//        }
+
         
         
         
@@ -353,67 +332,62 @@ struct HistorySubView : View {
     
     
     var body : some View {
-        
-        VStack{
-            if let u = user!.transactionArray {
-                
-                let uniqueTransDate = getUniqueDateArray(trans: u)
-                
-                
-//                Text("Trans COunt \(uniqueTransDate.count)" )
-                List(uniqueTransDate, id : \.self) {
-                    transDate in
+        NavigationView {
+            VStack{
+                if let u = user!.transactionArray {
                     
+                    let uniqueTransDate = getUniqueDateArray(trans: u)
                     
-                    VStack{
-                        HStack{
-                            Text(String(format: "Total : %.2f", getTotalDaily(transDate, u)))
-
-                            Spacer();
-                            
-                            Text(String("\(transDate.formatted(date: .abbreviated, time: .omitted))"))
-                        }.onTapGesture {
+                    var dateSelected : Date = Date();
+                    List(uniqueTransDate, id : \.self) {
+                        transDate in
+                        Button {
                             isShowedTrans = true
                             dateSelected = transDate;
                             print("Testing transdate : \(transDate)")
+                        } label: {
+                            VStack{
+                                HStack{
+                                    Text(String(format: "Total : %.2f", getTotalDaily(transDate, u)))
+                                    
+                                    Spacer();
+                                    
+                                    Text(String("\(transDate.formatted(date: .abbreviated, time: .omitted))"))
+                                }
+                            }.sheet(isPresented: $isShowedTrans, content: {
+                                var transactions : [DateTransaction] = filterTransactionbyDay(u, dateSelected);
+                                
+                                VStack{
+                                    Text("Transaction : \(dateSelected.formatted(date: .abbreviated, time: .omitted))")
+                                        .padding()
+                                        .font(.system(size: 30))
+                                    
+                                    List(transactions, id : \.self) {trans in
+                                        VStack{
+                                            HStack{
+                                                Text("\((trans.dateTime?.formatted(date: .abbreviated, time: .omitted))!)")
+                                                Spacer()
+                                                Text(String(trans.transactionPrice ?? ""))
+                                            }.padding()
+                                            Text(String(trans.descriptionTransaction ?? "No Description"))
+                                        }
+                                    }
+                                }
+                            })
                         }
-                    }.sheet(isPresented: $isShowedTrans, content: {
-                        
-                        VStack{
-                            
-                            
-                            Text("Hello world, the transaction will be shown for date : \(dateSelected?.get(getWhat: .month) ?? 0), and month :\(dateSelected?.get(getWhat: .day) ?? 0)")
-                                .frame(width: 1000, height: 700)
-                                .font(.system(size: 50))
-                        }
-                        
-                    })
+                    }
                 }
-                
-                
-                
-                // harus bikin dia berdasarkan date dlu biar satu date gaa redundant gitu,
-                // Array distinct buat extension baru deng, semangat
-                // main game dlu ya gais
-                
-                
-//                List(u, id : \.self) {trans in
-//                    var dateCheck : Date = trans.dateTime!;
-//                    VStack {
-//                        HStack {
-//
-//                            Text(String(format: "Total : %.2f", getTotalDaily(dateCheck, u)))
-//
-//                            Spacer();
-//                            Text(String("\(trans.dateTime!)"))
-//
-//
-//                        }
-//                    }
-//                }
             }
-        }
+        }.navigationViewStyle(StackNavigationViewStyle())
     }
+}
+
+func filterTransactionbyDay(_ trans : [DateTransaction], _ dateSelected : Date) -> [DateTransaction] {
+    var transactions = trans.filter({
+        ($0.dateTime?.get(getWhat: .day) == dateSelected.get(getWhat: .day) && $0.dateTime?.get(getWhat: .month) == dateSelected.get(getWhat: .month) && $0.dateTime?.get(getWhat: .year) == dateSelected.get(getWhat: .year))
+    })
+    
+    return transactions
 }
 
 func getUniqueDateArray( trans : [DateTransaction]) -> [Date] {

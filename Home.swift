@@ -24,7 +24,7 @@ struct Home: View {
                         Text("Report")
                     }
                     VStack{
-                            SettingView();
+                        SettingView();
                         NavigationLink("", destination: LoginPage().navigationBarHidden(true), isActive: $data.logout)
 
                     }
