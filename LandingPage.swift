@@ -24,7 +24,10 @@ struct landingPage: View {
                 
                 
                 Spacer();
-            }
+            }.background(
+                Image("freePikWallpaper")
+                    .opacity(0.25)
+            )
         }.navigationViewStyle(StackNavigationViewStyle())
     }
 }
