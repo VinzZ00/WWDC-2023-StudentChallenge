@@ -109,8 +109,6 @@ struct PreHomePage: View {
                 NavigationLink("", destination: Home().navigationBarHidden(true), isActive: $goToHome)
                 Spacer();
             }.navigationBarTitle("Hello, \(data.userName)")
-//                .padding();
         }.navigationViewStyle(StackNavigationViewStyle())
-//            .frame(width: 1000, height: 1000)
     }
 }

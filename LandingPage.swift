@@ -8,7 +8,7 @@ struct landingPage: View {
                 Spacer()
                 HStack(alignment: .top){
                     Spacer()
-                    Text("Hey may I ask you something?\ndo you have any problem with your finance?, don't know how to really manage it?\n")
+                    Text("Hey, may I ask you something?\ndo you know what is money management?, don't know how to manage it?\n")
                         .font(.system(size: 30));
                     Spacer()
                 }
@@ -26,7 +26,7 @@ struct landingPage: View {
                 Spacer();
             }.background(
                 Image("freePikWallpaper")
-                    .opacity(0.25)
+                    .opacity(0.1)
             )
         }.navigationViewStyle(StackNavigationViewStyle())
     }

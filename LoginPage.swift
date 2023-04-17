@@ -10,24 +10,17 @@ import SwiftUI
 struct LoginPage: View {
     @Environment(\.managedObjectContext) var moc
     @FetchRequest(sortDescriptors: []) var users : FetchedResults<User>
-//    @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "userName == %@", "Justin" )) var users : FetchedResults<User>
     @StateObject var data : Data = Data();
     @State var loginValid : Bool = false;
     @State var registerValid : Bool = false;
     @State var alertLogin : Bool = false;
-    init() {
-//        @FetchRequest(sortDescriptors: [], predicate: NSPredicate(format: "userName == %@", "Elvin")) var testingUsers : FetchedResults<User>
-//        print("THe count of the User is : \(testingUsers.count)")
-//        print("user name is : \(testingUsers.last?.userName)")
-        
-        
-    }
+    @State var unUniqueName : Bool = false;
     
     
     var body: some View {
         NavigationView() {
             VStack{
-                Image("logo")
+                Image("logo") // From Freepik
                     .resizable()
                     .frame(width: 600, height: 600, alignment: .center)
                     .padding(.bottom, -100)
@@ -54,7 +47,6 @@ struct LoginPage: View {
                 Button() {
                     if data.userName != "" {
                         for user in users {
-                            print("User transaction : \(user.transactionArray.count)")
                             
                             if (user.userName! == data.userName) {
                                 data.currentUser = user;
@@ -89,8 +81,7 @@ struct LoginPage: View {
                         if x.userName! == data.userName {
                             uniqueName = false;
                         }
-                        print(x.userName!)
-                        print(x.salary)
+
                     }
 
                     if ((uniqueName || users.count < 1) && data.userName.count > 0) {
@@ -99,16 +90,12 @@ struct LoginPage: View {
                         user.financialType = "unSpecified"
                         user.id = UUID()
                         user.salary = "0";
-                        print("Masuk");
+                        registerValid = true;
                         data.currentUser = user;
                         data.salary = user.salary ?? "0"
-                        registerValid = true
-                        
+                    } else {
+                        unUniqueName = true
                     }
-                    
-//                    print(registerValid)
-//                    print(users.count)
-//                    print("RegisterValid : \(registerValid)")
                 } label: {
                     Text("Register with User Name")
                         .frame(width: 520, height: 75)
@@ -117,6 +104,8 @@ struct LoginPage: View {
                         .foregroundColor(.white)
                         .font(.system(size:40) .weight(.regular))
                         .shadow(color: .gray, radius: 5)
+                }.alert(isPresented: $unUniqueName) {
+                    Alert(title: Text("Un Unique Username"), message: Text("the Username has been used, please choose other username"))
                 }
                 
                 NavigationLink("", destination: PreHomePage().navigationBarHidden(true), isActive: $registerValid)

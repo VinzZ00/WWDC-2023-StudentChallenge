@@ -14,6 +14,7 @@ struct Home: View {
     
     var body: some View {
         NavigationView{
+            VStack {
                 TabView{
                     VStack{
                         TransactionView()
@@ -23,26 +24,20 @@ struct Home: View {
                         Image(systemName: "doc.fill")
                         Text("Report")
                     }
+                    
                     VStack{
-                        SettingView();
-                        NavigationLink("", destination: LoginPage().navigationBarHidden(true), isActive: $data.logout)
-
+                        SettingView()
+                            .background(
+                                LinearGradient(colors: [Color(red: 241/255, green: 255/255, blue: 190/255), Color(red: 15/255, green: 195/255, blue: 14/255)], startPoint: .leading, endPoint: .trailing)
+                            );
                     }
                     .tabItem{
                         Image(systemName: "gearshape.fill")
                         Text("Setting")
                     }
+                }
+                NavigationLink("", destination: LoginPage().navigationBarHidden(true), isActive: $data.logout)
             }
         }.navigationViewStyle(StackNavigationViewStyle())
-    }
-}
-
-
-
-
-
-struct Home_Previews: PreviewProvider {
-    static var previews: some View {
-        Home()
     }
 }

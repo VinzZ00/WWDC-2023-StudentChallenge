@@ -8,29 +8,26 @@ import PackageDescription
 import AppleProductTypes
 
 let package = Package(
-    name: "WWDCStudentChallenge",
+    name: "WWDC-Elvin-2023",
     platforms: [
         .iOS("15.2")
     ],
     products: [
         .iOSApplication(
-            name: "WWDCStudentChallenge",
+            name: "WWDC-Elvin-2023",
             targets: ["AppModule"],
-            bundleIdentifier: "com.AA.WWDCStudentChallenge",
+            bundleIdentifier: "com.AA.WWDC-Elvin-2023",
             teamIdentifier: "382VG5FRJK",
             displayVersion: "1.0",
             bundleVersion: "1",
-            appIcon: .asset("AppIcon"),
+            appIcon: .placeholder(icon: .openBook),
             accentColor: .presetColor(.indigo),
             supportedDeviceFamilies: [
                 .pad,
                 .phone
             ],
             supportedInterfaceOrientations: [
-                .portrait,
-                .landscapeRight,
-                .landscapeLeft,
-                .portraitUpsideDown(.when(deviceFamilies: [.pad]))
+                .portrait
             ]
         )
     ],

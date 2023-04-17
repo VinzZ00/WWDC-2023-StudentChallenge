@@ -11,15 +11,12 @@ import Foundation
 struct PersistenceController {
     static let shared = PersistenceController();
     
-    // Container
-//    let container : NSPersistentContainer;
-    
     // Model
     let model : NSManagedObjectModel;
     
     init(inMemory : Bool = false) {
         
-        //Entities
+        // Entity (User)
         
         let userEntity = NSEntityDescription();
         userEntity.name = "User"
@@ -45,6 +42,8 @@ struct PersistenceController {
         userEntity.properties.append(userNameAttribute)
         userEntity.properties.append(UserFinancialTypeAttribute)
         userEntity.properties.append(userSalaryAttribute)
+        
+        // Entity (dateTransaction)
         
         let dateTransactionEntity = NSEntityDescription();
         dateTransactionEntity.name = "DateTransaction"
@@ -96,51 +95,11 @@ struct PersistenceController {
         userEntity.properties.append(userRelation)
         dateTransactionEntity.properties.append(dateTransactionRelation)
         
-        // ~Unused table just incase if change
-//        let TransactionEntity = NSEntityDescription();
-//        TransactionEntity.name = "TransactionEntity"
-//        TransactionEntity.managedObjectClassName = "TransactionEntity"
-
-//        let TransactionId = NSAttributeDescription()
-//        TransactionId.name = "id"
-//        TransactionId.type = .uuid
-        
-        
-        
-//        TransactionEntity.properties.append(TransactionId)
-//        TransactionEntity.properties.append(TransactionDetail)
-//        TransactionEntity.properties.append(transactionPrice)
-//        TransactionEntity.properties.append(dateTimeTransactionAttribute)
-        
-//        let dateToTransactionRelation = NSRelationshipDescription();
-//
-//        dateToTransactionRelation.name = "dateToTransaction"
-//        dateToTransactionRelation.destinationEntity = TransactionEntity;
-//        dateToTransactionRelation.maxCount = 0
-//        dateToTransactionRelation.minCount = 0
-//
-//        let transactionToDateRelation = NSRelationshipDescription();
-//
-//        transactionToDateRelation.name = "transactionToDate"
-//        transactionToDateRelation.destinationEntity = dateTransactionEntity
-//        transactionToDateRelation.maxCount = 1;
-//        transactionToDateRelation.minCount = 1;
-//
-//        dateTransactionEntity.properties.append(dateToTransactionRelation);
-//        TransactionEntity.properties.append(transactionToDateRelation);
-        
-//
-//        let daytransactionTotal = NSAttributeDescription();
-        
         // Model Creation
         
         model = NSManagedObjectModel()
         model.entities.append(userEntity)
         model.entities.append(dateTransactionEntity)
-
-        
-        
-
         
     }
 }
