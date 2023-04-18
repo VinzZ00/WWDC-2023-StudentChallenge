@@ -141,7 +141,6 @@ struct TransactionSubView : View {
             Text("Transaction Type")
                 .bold()
                 .font(.system(size: 40))
-                .padding(.top, 30)
             
             Picker("", selection : $type) {
                 ForEach((data.currentUser?.financialType == "10 20 30 40") ? Array(tenTo40Type[2..<4]) : Array(twentyTo50Type[1..<3]), id: \.self) {
@@ -175,7 +174,7 @@ struct TransactionSubView : View {
                 TextField("Is there Any Description?", text: $transDesc)
                     .font(.system(size : 40))
                     .padding(.leading, 20)
-                    .frame(width: 970, height: 100)
+                    .frame(width: 970, height: 70)
                     .border(.black, width: 3)
                     .cornerRadius(10)
             }
@@ -212,17 +211,16 @@ struct TransactionSubView : View {
                 Text("Submit")
                     .font(.system(size: 50, weight: .bold))
                     .foregroundColor(.white)
-                    .frame(width: 970, height: 100, alignment: .center)
+                    .frame(width: 970, height: 90, alignment: .center)
                     .background(Color(red: 201/255, green: 238/255, blue: 68/255))
                     .border(.gray, width: 3)
                     .shadow(color: .gray, radius: 10, x: 5, y: 8)
                     .cornerRadius(10)
             }.shadow(color : .gray, radius: 10)
-                .padding(.top, 40)
-                .padding(.bottom, 20)
+                .padding(.top, 30)
             Spacer()
             
-        }.navigationTitle("Save your Transaction?")
+        }.navigationTitle("Transaction")
             .padding(.top, 20)
             .background(.white.opacity(0.7))
     }
@@ -373,7 +371,6 @@ struct HistorySubView : View {
             
         }.navigationViewStyle(StackNavigationViewStyle())
             .cornerRadius(20)
-            .padding()
     }
 }
 

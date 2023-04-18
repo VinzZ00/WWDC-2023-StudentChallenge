@@ -15,7 +15,6 @@ struct PersistenceController {
     let model : NSManagedObjectModel;
     
     init(inMemory : Bool = false) {
-        
         // Entity (User)
         
         let userEntity = NSEntityDescription();
