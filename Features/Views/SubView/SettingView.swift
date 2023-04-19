@@ -63,7 +63,7 @@ struct SettingView : View {
                     
                     HStack{
                         Spacer()
-                        quotesView(quotesInd: "\"Pencapaian besar dimulai dari keberhasilan melakukan satu hal kecil.\"", quotesEnglish: "\"the journey of a thousand miles starts with a single step indoneisa\"", title: "~ Quotes from Laozhu ~")
+                        quotesView(quotesInd: "\"Pencapaian besar dimulai dari keberhasilan melakukan satu hal kecil.\"", quotesEnglish: "\"the journey of a thousand miles starts with a single step\"", title: "~ Quotes from Laozhu ~")
                     }
                 }.padding();
                 
